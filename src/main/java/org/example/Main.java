@@ -188,7 +188,7 @@ public class Main {
         int serv = 0;
 
         while (serv != 9) {
-            System.out.println("===== Serviços =====");
+            System.out.println("=============== Serviços ===============");
             System.out.println("1 - Manicure R$ 25,00");
             System.out.println("2 - Pedicure R$ 30,00");
             System.out.println("3 - Manicure e Pedicure R$ 50,00");
@@ -197,7 +197,7 @@ public class Main {
             System.out.println("6 - Alongamento em gel R$ 190,00");
             System.out.println("7 - Alongamento em fibra R$ 250,00");
             System.out.println("9 - Voltar");
-            System.out.println("====================");
+            System.out.println("========================================");
             System.out.println("Escolha uma opção: ");
 
             if (scan.hasNextInt()) {
