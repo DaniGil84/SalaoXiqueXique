@@ -226,4 +226,5 @@ public class Main {
     private static Connection conectar() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USUARIO, DB_SENHA);
     }
+
 }
