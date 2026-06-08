@@ -210,15 +210,32 @@ public class Main {
             }
 
             switch (serv) {
-                case 1: System.out.println("Manicure R$ 25,00"); break;
-                case 2: System.out.println("Pedicure R$ 30,00"); break;
-                case 3: System.out.println("Manicure e Pedicure R$ 50,00"); break;
-                case 4: System.out.println("Esmaltação em gel mão R$ 60,00"); break;
-                case 5: System.out.println("Esmaltação em gel pé R$ 60,00"); break;
-                case 6: System.out.println("Alongamento em gel R$ 190,00"); break;
-                case 7: System.out.println("Alongamento em fibra R$ 250,00"); break;
-                case 9: System.out.println("Voltando ao menu principal..."); break;
-                default: System.out.println("Opção inválida!");
+                case 1:
+                    System.out.println("Manicure R$ 25,00");
+                break;
+                case 2:
+                    System.out.println("Pedicure R$ 30,00");
+                break;
+                case 3:
+                    System.out.println("Manicure e Pedicure R$ 50,00");
+                break;
+                case 4:
+                    System.out.println("Esmaltação em gel mão R$ 60,00");
+                break;
+                case 5:
+                    System.out.println("Esmaltação em gel pé R$ 60,00");
+                break;
+                case 6:
+                    System.out.println("Alongamento em gel R$ 190,00");
+                break;
+                case 7:
+                    System.out.println("Alongamento em fibra R$ 250,00");
+                break;
+                case 9:
+                    System.out.println("Voltando ao menu principal...");
+                break;
+                default:
+                    System.out.println("Opção inválida!");
             }
         }
     }
