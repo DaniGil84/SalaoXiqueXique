@@ -13,9 +13,9 @@ public class Main {
 
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("============================");
+        System.out.println("=========================+++===");
         System.out.println("BEM VINDO AO SALÃO XIQUE XIQUE!");
-        System.out.println("============================");
+        System.out.println("============================+++");
 
         int opcao = 0;
 
