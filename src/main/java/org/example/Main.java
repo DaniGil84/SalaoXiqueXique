@@ -7,17 +7,17 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/DER_ProjetoIntegrador_Manicure";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/salao_xique_xique";
     private static final String DB_USUARIO = "root";
-    private static final String DB_SENHA = "";
+    private static final String DB_SENHA = "senha";
 
     public static void main(String[] args) {
 
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("============================");
+        System.out.println("===============================");
         System.out.println("BEM VINDO AO SALÃO XIQUE XIQUE!");
-        System.out.println("============================");
+        System.out.println("===============================");
 
         int opcao = 0;
 
@@ -40,10 +40,10 @@ public class Main {
                     cadastrarUsuario(scan);
                     break;
                 case 2:
-                    listarTodosUsuarios();
+                    listarTodosClientes();
                     break;
                 case 3:
-                    consultaUsuarioPorNome(scan);
+                    consultaClientesPorNome(scan);
                     break;
                 case 4:
                     servicosManicure(scan);
@@ -70,7 +70,7 @@ public class Main {
         System.out.println("4 - Serviços");
         System.out.println("5 - Listar Atendimentos");
         System.out.println("10 - Sair");
-        System.out.println("===========================");
+        System.out.println("==========================================");
     }
 
     public static void cadastrarUsuario(Scanner scan) {
@@ -84,9 +84,9 @@ public class Main {
         String CPF = scan.nextLine();
 
         System.out.println("Digite a cidade: ");
-        String endereco = scan.nextLine();
+        String cidade = scan.nextLine();
 
-        if (endereco.length() > 250) {
+        if (cidade.length() > 250) {
             System.out.println("Cidade é invalida");
         }
 
@@ -99,31 +99,28 @@ public class Main {
         System.out.println("Digite o Telefone: ");
         String telefone = scan.nextLine();
 
-        String sql = "INSERT INTO usuarios(nome,cpf,endereco,email,telefone) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO cliente(nome,cpf,cidade,email,telefone) VALUES(?,?,?,?,?)";
 
         try (Connection conn = conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nome);
             stmt.setString(2, CPF);
-            stmt.setString(3, endereco);
+            stmt.setString(3, cidade);
             stmt.setString(4, email);
             stmt.setString(5, telefone);
 
-            int linhasAfetadas = stmt.executeUpdate();
+            // int linhasAfetadas = stmt.executeUpdate();
 
-            if (linhasAfetadas > 0) {
-                System.out.println("Usuário salvo com SUCESSO!");
-            }
         } catch (Exception e) {
-            System.out.println("FALHA ao Salvar!");
+            System.out.println("Cliente Salvo com Suceso!");
             throw new RuntimeException(e);
         }
     }
 
-    public static void listarTodosUsuarios() {
+    public static void listarTodosClientes() {
 
         System.out.println("Lista de usuários");
 
-        String sql = "SELECT * FROM usuarios";
+        String sql = "SELECT * FROM cliente";
 
         try (Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -153,12 +150,12 @@ public class Main {
         }
     }
 
-    public static void consultaUsuarioPorNome(Scanner scan) {
+    public static void consultaClientesPorNome(Scanner scan) {
 
         System.out.println("Digite o nome do usuário: ");
         String nome = scan.nextLine();
 
-        String sql = "SELECT * FROM usuarios WHERE nome LIKE ?";
+        String sql = "SELECT * FROM cliente WHERE nome LIKE ?";
 
         try (Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -197,7 +194,7 @@ public class Main {
         System.out.println("Digite o nome (ou parte do nome) do cliente: ");
         String nomeBusca = scan.nextLine();
 
-        int usuarioId = buscarIdUsuarioPorNome(nomeBusca, scan);
+        int usuarioId = buscarIdClientePorNome(nomeBusca, scan);
         if (usuarioId == -1) {
             System.out.println("Cliente não encontrado.");
             return;
@@ -206,7 +203,7 @@ public class Main {
         int serv = 0;
 
         while (serv != 9) {
-            System.out.println("===== Serviços =====");
+            System.out.println("================ Serviços ===============");
             System.out.println("1 - Manicure R$ 25,00");
             System.out.println("2 - Pedicure R$ 30,00");
             System.out.println("3 - Manicure e Pedicure R$ 50,00");
@@ -215,7 +212,7 @@ public class Main {
             System.out.println("6 - Alongamento em gel R$ 190,00");
             System.out.println("7 - Alongamento em fibra R$ 250,00");
             System.out.println("9 - Voltar");
-            System.out.println("====================");
+            System.out.println("========================================");
             System.out.println("Escolha uma opção: ");
 
             if (scan.hasNextInt()) {
@@ -238,9 +235,9 @@ public class Main {
         }
     }
 
-    public static int buscarIdUsuarioPorNome(String nome, Scanner scan) {
+    public static int buscarIdClientePorNome(String nome, Scanner scan) {
 
-        String sql = "SELECT id, nome FROM usuarios WHERE nome LIKE ?";
+        String sql = "SELECT id, nome FROM cliente WHERE nome LIKE ?";
 
         try (Connection conn = conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -283,12 +280,12 @@ public class Main {
         }
     }
 
-    public static void salvarAtendimento(int usuarioId, int servicoId) {
+    public static void salvarAtendimento(int clienteId, int servicoId) {
 
-        String sql = "INSERT INTO atendimentos(usuario_id, servico_id) VALUES(?,?)";
+        String sql = "INSERT INTO atendimentos(cliente_id, servico_id) VALUES(?,?)";
 
         try (Connection conn = conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, usuarioId);
+            stmt.setInt(1, clienteId);
             stmt.setInt(2, servicoId);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -303,7 +300,7 @@ public class Main {
 
         String sql = "SELECT u.nome AS cliente, s.nome AS servico, s.valor, a.data_atendimento " +
                 "FROM atendimentos a " +
-                "JOIN usuarios u ON a.usuario_id = u.id " +
+                "JOIN cliente u ON a.cliente_id = u.id " +
                 "JOIN servicos s ON a.servico_id = s.id " +
                 "ORDER BY u.nome, a.data_atendimento";
 
@@ -341,9 +338,9 @@ public class Main {
                 System.out.println("Nenhum atendimento encontrado!");
             } else {
                 System.out.println("   Subtotal | " + clienteAtual + ": R$ " + subtotalCliente);
-                System.out.println("--------------------------------");
+                System.out.println("-----------------------------------------");
                 System.out.println("VALOR TOTAL: R$ " + totalGeral);
-                System.out.println("--------------------------------");
+                System.out.println("-----------------------------------------");
             }
 
         } catch (Exception e) {
