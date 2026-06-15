@@ -1,5 +1,4 @@
 package org.example;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +6,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    //private static final String DB_URL = "jdbc:mysql://localhost:3306/DER_ProjetoIntegrador_Manicure";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/salao_xique_xique";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/DER_ProjetoIntegrador_Manicure"; // BD Glauber
+    //private static final String DB_URL = "jdbc:mysql://localhost:3306/salao_xique_xique"; // BD Dani
     private static final String DB_USUARIO = "root";
     private static final String DB_SENHA = "";
 
@@ -16,22 +15,24 @@ public class Main {
 
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("============================");
+        System.out.println(" ");
+        System.out.println("===============================");
         System.out.println("BEM VINDO AO SALÃO XIQUE XIQUE!");
-        System.out.println("============================");
+        System.out.println("===============================");
+        System.out.println(" ");
 
         int opcao = 0;
 
         while (opcao != 10) {
             exibirMenu();
 
-            System.out.println("Escolha uma opção: ");
+            System.out.println("Escolha uma das opções acima: ");
 
             if (scan.hasNextInt()) {
                 opcao = scan.nextInt();
                 scan.nextLine();
             } else {
-                System.out.println("Por favor digite uma opção valida!");
+                System.out.println("Por favor digite uma opção válida!");
                 scan.nextLine();
                 continue;
             }
@@ -52,6 +53,9 @@ public class Main {
                 case 5:
                     listarAtendimentos();
                     break;
+                case 6:
+                    listarServico();
+                    break;
                 case 10:
                     System.out.println("Encerrando o sistema .... Até logo!");
                     break;
@@ -65,11 +69,12 @@ public class Main {
 
     public static void exibirMenu() {
         System.out.println("============= Salão Xique Xique ===========");
-        System.out.println("1 - Cadastro");
-        System.out.println("2 - Listar todos");
-        System.out.println("3 - Buscar por nome");
-        System.out.println("4 - Serviços");
+        System.out.println("1 - Cadastro de usuário novo");
+        System.out.println("2 - Listar todos os usuário");
+        System.out.println("3 - Buscar usuário por nome");
+        System.out.println("4 - Atribuir serviço a cliente");
         System.out.println("5 - Listar Atendimentos");
+        System.out.println("6 - Listar serviços e valores");
         System.out.println("10 - Sair");
         System.out.println("===========================");
     }
@@ -80,33 +85,40 @@ public class Main {
 
         System.out.println("Digite o nome: ");
         String nome = scan.nextLine();
+        //if (nome.contains("numeros")) {              - precisa fazer essa validação
+            //System.out.println("nome é inválido");
 
         System.out.println("Digite o CPF: ");
         String CPF = scan.nextLine();
+        //if (CPF.contains("letras")) {              - precisa fazer essa validação
+            //System.out.println("CPF é inválido");
 
         System.out.println("Digite a cidade: ");
         String endereco = scan.nextLine();
 
-        if (endereco.length() > 250) {
-            System.out.println("Cidade é invalida");
+        if (endereco.length() > 70) {
+            System.out.println("Cidade é inválida");
         }
 
         System.out.println("Digite o E-mail: ");
         String email = scan.nextLine();
         if (!email.contains("@")) {
-            System.out.println("E-mail é invalido");
+            System.out.println("E-mail é inválido");
         }
 
         System.out.println("Digite o Telefone: ");
         String telefone = scan.nextLine();
+        //if (Telefone.contains("letras")) {              - precisa fazer essa validação
+            //System.out.println("Telefone é inválido");
+
 
         String sql = "INSERT INTO usuarios(nome,cpf,endereco,email,telefone) VALUES(?,?,?,?,?)";
 
         try (Connection conn = conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, nome);
-            stmt.setString(2, CPF);
-            stmt.setString(3, endereco);
-            stmt.setString(4, email);
+            stmt.setString(1, nome); //deveria aceitar somente letras
+            stmt.setString(2, CPF);  // Não deveria aceitar letras
+            stmt.setString(3, endereco); //
+            stmt.setString(4, email); //
             stmt.setString(5, telefone);
 
             int linhasAfetadas = stmt.executeUpdate();
@@ -153,6 +165,40 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+
+    public static void listarServico() {
+
+        System.out.println("Lista de Serviçoes e Valores");
+
+        String sql = "SELECT * FROM servicos";
+
+        try (Connection conn = conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            boolean encontrouDados = false;
+
+            while (rs.next()) {
+                encontrouDados = true;
+                System.out.println("- "
+                        + rs.getString("nome")
+                        + " - "
+                        + "R$ "
+                        + rs.getString("valor")
+                 );
+            }
+
+            if (encontrouDados) {
+                System.out.println("Dados encontrados!");
+            } else {
+                System.out.println("Nenhum dado encontrado!");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static void consultaUsuarioPorNome(Scanner scan) {
 
